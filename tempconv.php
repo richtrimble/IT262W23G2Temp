@@ -1,33 +1,47 @@
 <?php
 //tempconv.php
 #
-# This is just place-holder code for now
+# Initial shot at the app
 #
-if(isset($_POST["FirstName"])){
+if(isset($_POST["TempInput"])){
 	
-	$fav = implode(', ', $_POST['FavoriteToppings']);
+	$message = "<p>Your temperature is: {$_POST['TempInput']}";
 	
-	echo "<p>Your first name is: {$_POST['FirstName']}</p>";
-	echo "<p>Your favorite color is: {$_POST['FavoriteColor']}</p>";
-	echo "<p>Your favorite pizza topping(s): $fav</p>";
+	if($_POST["TypeTemp"]=="fahrenheit") {
+		$message = $message."F (Fahrenheit)</p>";
+		$fTemp = $_POST["TempInput"];
+		$cTemp = (5/9) * ($_POST["TempInput"] - 32);
+		$kTemp = $cTemp + 273.15;
+		echo $message."<p>Celcius is ".$cTemp."C - Kelvin is ".$kTemp."K</p>";
+	}
 	
-} else {
-	echo '
-		<form action="" method="POST">
-			<p>First Name: <input type="text" name="FirstName" /></p>
-			<fieldset>
-			<legend>Favorite Color</legend>
-				<p><input type="radio" name="FavoriteColor" value="red" />Red</p>
-				<p><input type="radio" name="FavoriteColor" value="blue" />Blue</p>
-				<p><input type="radio" name="FavoriteColor" value="yellow" />Yellow</p>
-			</fieldset>			
-			<fieldset>
-			<legend>Favorite Pizza Toppings</legend>
-				<p><input type="checkbox" name="FavoriteToppings[]" value="sausage" />Sausage</p>
-				<p><input type="checkbox" name="FavoriteToppings[]" value="cheese" />Cheese</p>
-				<p><input type="checkbox" name="FavoriteToppings[]" value="sauce" />Sauce</p>
-			</fieldset>			
-			<p><input type="submit" /></p>		
-		</form>	
-	';
+	if($_POST["TypeTemp"]=="celcius") {
+		$message = $message."C (Celcius)</p>";
+		$cTemp = $_POST["TempInput"];
+		$fTemp = (9/5) * $cTemp + 32;
+		$kTemp = $cTemp + 273.15;
+		echo $message."Fahrenheit is ".$fTemp."F - Kelvin is ".$kTemp."K<br><br>";
+	}
+	
+	if($_POST["TypeTemp"]=="kelvin") {
+		$message = $message."K (Kelvin)</p>";
+		$kTemp = $_POST["TempInput"];
+		$cTemp = $kTemp - 273.15;
+		$fTemp = (9/5) * $cTemp + 32;
+		echo $message."Fahrenheit is ".$fTemp."F - Celcius is ".$cTemp."C<br><br>";
+	}
 }
+	
+echo '
+	<fieldset>
+		<legend>Enter new temperature</legend>
+		<form action="" method="POST">
+		<p>Temperature to convert: <input type="number" name="TempInput" step="0.01"/></p>
+		<p><input type="radio" name="TypeTemp" value="fahrenheit" />Fahrenheit</p>
+		<p><input type="radio" name="TypeTemp" value="celcius" />Celcius</p>
+		<p><input type="radio" name="TypeTemp" value="kelvin" />Kelvin</p>
+	</fieldset>			
+	<p><input type="submit" /></p>		
+	</form>	
+';
+
